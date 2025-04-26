@@ -32,18 +32,34 @@ export const users = pgTable('users', {
   updatedAt: timestamp('updated_at').notNull()
 });
 
+export const organizations = pgTable('organizations', {
+  id: text('id').primaryKey().notNull(),
+  name: text('name').notNull(),
+  imageUrl: text('image_url'),
+  phoneNumber: text('phone_number'),
+  buildingName: text('building_name'),
+  locality: text('locality'),
+  streetName: text('street_name'),
+  pincode: text('pincode'),
+  createdById: text('created_by_id')
+    .notNull()
+    .references(() => users.id, { onDelete: 'cascade' }),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').notNull()
+});
+
 export const projects = pgTable('projects', {
   id: text('id').primaryKey().notNull(),
   name: text('name').notNull(),
-  key: text('key').notNull(),
   description: text('description'),
-  organizationId: text('organization_id').notNull(),
+  email: text('email'),
+  phoneNumber: text('phone_number'),
+  logo: text('logo'),
+  organizationId: text('organization_id')
+    .notNull()
+    .references(() => organizations.id, { onDelete: 'cascade' }),
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').notNull()
-}, (table) => {
-  return {
-    orgKeyUnique: uniqueIndex('org_key_unique').on(table.organizationId, table.key)
-  };
 });
 
 export const sprints = pgTable('sprints', {
